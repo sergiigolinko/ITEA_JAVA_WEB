@@ -169,7 +169,7 @@ if(login!=null){
 			existError = true;
 			errorText += "<li>Empty Age</li>";
 	}
-	if(ageValues==false){
+	if(Integer.valueOf(age)<12 || Integer.valueOf(age)>100){
 		existError=true;
 		errorText += "<li>Age must be from 12 to 100</li>";
 	}
