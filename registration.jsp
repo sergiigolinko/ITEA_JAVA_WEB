@@ -12,10 +12,102 @@
 
 // rigthside Error text
 %>
-<table>
-<tr>
-<td width = '50' align = 'center'>
+
+<%
+String login = request.getParameter("login");
+String name = request.getParameter("name1");
+String password = request.getParameter("password");
+String repassword = request.getParameter("re-password");
+String age = request.getParameter("age");
+String gender = request.getParameter("gender");
+String address = request.getParameter("address");
+String comments = request.getParameter("comments");
+String amigo = request.getParameter("amigo");
+boolean showForm = true;
+String result = "";
+String errorText = "";
+
+if(login!=null){
+	boolean existError = false;
+	errorText = "<ul>";
+	boolean emailMatches = login.matches("\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*\\.\\w{2,4}");
+	boolean passwordValues=password.matches("(?=.*[0-9]{2,})(?=.*[a-z])(?=.*[A-Z]{2,}).{8,}");
+	boolean repasswordValues=passwordValues;
+	boolean ageValues=age.matches("(?=.*[1-9])(?=.*[2-9]).{2,3}");
+	if(login.length() == 0) {
+			existError = true;
+			errorText += "<li>Empty Login</li>";
+	}
+	if(emailMatches==false){
+		existError=true;
+		errorText += "<li>Not Email Address</li>";
+	}
+	if(name.length()==0){
+		existError=true;
+		errorText += "<li>Empty Name</li>";
+	}
+	if(password.length() == 0) {
+			existError = true;
+			errorText += "<li>Empty Password</li>";
+	}
+	if(passwordValues==false){
+		existError=true;
+		errorText += "<li>Password must contain at least TWO digits, ONLY latin symbols and at least TWO letters with upper case</li>";
+	}
+	if(repassword.length() == 0) {
+			existError = true;
+			errorText += "<li>Empty Re-Password</li>";
+	}
+	if(repasswordValues==false&&passwordValues==repasswordValues){
+		existError=true;
+		errorText += "<li>Password and Re-Password must be the same </li>";
+	}
+	if(age.length() == 0) {
+			existError = true;
+			errorText += "<li>Empty Age</li>";
+	}
+	try{
+	if(Integer.valueOf(age)<12 || Integer.valueOf(age)>100){
+		existError=true;
+		errorText += "<li>Age must be from 12 to 100</li>";
+	}
+	}
+	catch (NumberFormatException e) {
+		existError = true;
+		errorText += "<li>Age must be a number</li>";
+	}
+	
+	
+	if(gender == null) {
+			existError = true;
+			errorText += "<li>Choose Gender</li>";
+	}
+	if(comments.length() == 0) {
+			existError = true;
+			errorText += "<li>Write Some Comments</li>";
+	}
+	
+	errorText +="</ul>";
+	
+	if(existError){
+		showForm=true;
+	}else{
+		showForm=false;
+		result="Registration Success";
+	}
+}
+if (showForm){
+
+%>
+
+
+
 <form action = ''>
+
+<table border='0'>
+<tr>
+<td>
+
 	<table border = '1'>
 	<tr>
 		<td width = '50' align = 'center'>
@@ -116,82 +208,16 @@
 	  </tr>
 	  
 	</table>
-</form>	
 </td>
-<td width = '50' align = 'center'>
+<td>
 <%
-String login = request.getParameter("login");
-String name = request.getParameter("name1");
-String password = request.getParameter("password");
-String repassword = request.getParameter("re-password");
-String age = request.getParameter("age");
-String gender = request.getParameter("gender");
-String address = request.getParameter("address");
-String comments = request.getParameter("comments");
-String amigo = request.getParameter("amigo");
-
-if(login!=null){
-	boolean existError = false;
-	String errorText = "<ul>";
-	boolean emailMatches = login.matches("\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*\\.\\w{2,4}");
-	boolean passwordValues=password.matches("(?=.*[0-9]{2,})(?=.*[a-z])(?=.*[A-Z]{2,}).{8,}");
-	boolean repasswordValues=passwordValues;
-	boolean ageValues=age.matches("(?=.*[1-9])(?=.*[2-9]).{2,3}");
-	if(login.length() == 0) {
-			existError = true;
-			errorText += "<li>Empty Login</li>";
-	}
-	if(emailMatches==false){
-		existError=true;
-		errorText += "<li>Not Email Address</li>";
-	}
-	if(name.length()==0){
-		existError=true;
-		errorText += "<li>Empty Name</li>";
-	}
-	if(password.length() == 0) {
-			existError = true;
-			errorText += "<li>Empty Password</li>";
-	}
-	if(passwordValues==false){
-		existError=true;
-		errorText += "<li>Password must contain at least TWO digits, ONLY latin symbols and at least TWO letters with upper case</li>";
-	}
-	if(repassword.length() == 0) {
-			existError = true;
-			errorText += "<li>Empty Re-Password</li>";
-	}
-	if(repasswordValues==false&&passwordValues==repasswordValues){
-		existError=true;
-		errorText += "<li>Password and Re-Password must be the same </li>";
-	}
-	if(age.length() == 0) {
-			existError = true;
-			errorText += "<li>Empty Age</li>";
-	}
-	if(Integer.valueOf(age)<12 || Integer.valueOf(age)>100){
-		existError=true;
-		errorText += "<li>Age must be from 12 to 100</li>";
-	}
-	if(gender == null) {
-			existError = true;
-			errorText += "<li>Choose Gender</li>";
-	}
-	if(comments.length() == 0) {
-			existError = true;
-			errorText += "<li>Write Some Comments</li>";
-	}
-	
-	errorText +="</ul>";
-	
-	if(existError){
-		out.write(errorText);
-	}else{
-		out.write("Registration Success");
-	}
-}
-
+out.write(errorText);
 %>
-<td width = '50' align = 'center'>
+</td>
 </tr>
-</table>
+</table>	
+</form>	
+<%
+}
+out.write(result);
+%>
